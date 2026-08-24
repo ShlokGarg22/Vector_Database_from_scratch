@@ -1,6 +1,8 @@
 from .similarity import cosine_similarity
+
 import json
 import os
+import heapq
 
 class VectorDB:
 
@@ -36,11 +38,11 @@ class VectorDB:
 
     def search(self,query_vector,k=5,filters=None):
 
-        results = []
 
         if filters is None:
             filters = {}
 
+        heap = []
         for vector_id , data in self.vectors.items():
 
             metadata = data["metadata"]
@@ -48,7 +50,7 @@ class VectorDB:
             matches_filter = True
             for key , expected_value in filters.items():
                 actual_value = metadata.get(key)
-                
+
                 if actual_value != expected_value:
                     matches_filter = False
                     break
@@ -60,12 +62,25 @@ class VectorDB:
 
             score = cosine_similarity(query_vector,vector)
 
-            results.append({
-                "id": vector_id,
-                "score":score,
-                "metadata":metadata
-            })
+            item = (
+                score , vector_id,metadata
+            )
 
+            if len(heap) < k:
+                heapq.heappush(heap,item)
+
+            elif score > heap[0][0]:
+                heapq.heapreplace(heap,item)
+            
+            results = []
+
+            for score, vector_id, metadata in heap:
+
+                results.append({
+                    "id": vector_id,
+                    "score": score,
+                    "metadata": metadata
+                   })
         results.sort(
             key=lambda x: x["score"],
             reverse=True

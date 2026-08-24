@@ -21,47 +21,93 @@
 # print(db.vectors)
 # print(results)
 from vector_db import VectorDB
+from vector_db.ivf import IVFIndex
 
+db = VectorDB(
+    storage_path="data/ivf_demo.json"
+)
 
-db = VectorDB()
 
 db.insert(
     "doc1",
-    [1, 2, 3],
+    [1, 1],
     {
-        "category": "AI",
-        "source": "ai_notes.pdf"
+        "category": "AI"
     }
 )
 
 db.insert(
     "doc2",
-    [2, 4, 6],
+    [2, 1],
     {
-        "category": "programming",
-        "source": "python.pdf"
+        "category": "AI"
     }
 )
 
 db.insert(
     "doc3",
-    [1, 2, 2],
+    [8, 8],
     {
-        "category": "AI",
-        "source": "cnn.pdf"
+        "category": "ML"
+    }
+)
+
+db.insert(
+    "doc4",
+    [9, 8],
+    {
+        "category": "ML"
+    }
+)
+
+db.insert(
+    "doc5",
+    [5, 5],
+    {
+        "category": "ML"
     }
 )
 
 
-query = [1, 2, 3]
+vectors = {
+    vector_id: data["vector"]
+    for vector_id, data in db.vectors.items()
+}
 
-
-results = db.search(
-    query,
-    k=5,
-    filters={"does_not_exist": "whatever"}
+index = IVFIndex(
+    n_clusters=2
 )
 
 
-for result in results:
-    print(result)
+index.build(vectors)
+
+
+print("\n========== CENTROIDS ==========")
+
+print(index.centroids)
+
+
+
+print("\n========== CLUSTERS ==========")
+
+print(index.clusters)
+
+
+query = [8, 8]
+
+
+results = index.search(
+    query=query,
+    vectors=vectors,
+    k=2
+)
+
+
+print("\n========== SEARCH RESULTS ==========")
+
+for vector_id, score in results:
+
+    print(
+        f"ID: {vector_id} | "
+        f"Similarity: {score:.4f}"
+    )

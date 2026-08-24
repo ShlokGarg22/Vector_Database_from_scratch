@@ -1,0 +1,1 @@
+{"doc1": {"vector": [1, 1], "metadata": {"category": "AI"}}, "doc2": {"vector": [2, 1], "metadata": {"category": "AI"}}, "doc3": {"vector": [8, 8], "metadata": {"category": "ML"}}, "doc4": {"vector": [9, 8], "metadata": {"category": "ML"}}, "doc5": {"vector": [5, 5], "metadata": {"category": "ML"}}}
