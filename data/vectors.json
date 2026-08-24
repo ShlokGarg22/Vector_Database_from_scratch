@@ -1,0 +1,1 @@
+{"doc1": {"vector": [1, 2, 3], "metadata": {"category": "AI", "source": "ai_notes.pdf"}}, "doc2": {"vector": [2, 4, 6], "metadata": {"category": "programming", "source": "python.pdf"}}, "doc3": {"vector": [1, 2, 2], "metadata": {"category": "AI", "source": "cnn.pdf"}}}
